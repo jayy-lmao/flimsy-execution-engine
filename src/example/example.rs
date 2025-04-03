@@ -45,6 +45,8 @@ impl core::AbstractWorkflowHandler for SumAndPrintWorkflow {
 }
 
 pub async fn run() {
+    println!("-------- Setting up -----");
+
     // New worker
     let server = Server::new();
     tokio::task::spawn(async move { server.run().await });
@@ -67,6 +69,7 @@ pub async fn run() {
     //     tokio::task::spawn(async move { worker.run().await });
     // }
 
+    println!("-------- Running Test -----");
     tokio::time::sleep(Duration::from_millis(800)).await;
 
     let start = Instant::now();

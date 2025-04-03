@@ -166,6 +166,7 @@ impl Worker {
     }
 
     pub async fn run(&self) {
+        println!("Starting worker");
         {
             let worker = self.clone();
             tokio::task::spawn(async move { worker.run_workflows().await });
