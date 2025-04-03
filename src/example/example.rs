@@ -36,9 +36,20 @@ impl core::AbstractWorkflowHandler for SumAndPrintWorkflow {
 
         let res = context.execute_activity(SumActivity, input.clone()).await?;
 
-        let res_2 = context
-            .execute_activity(FailActivity, "Fail input".to_string())
-            .await?;
+        let might_fail_randomly = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .subsec_nanos()
+            & 1
+            == 0;
+
+        let res_2 = if might_fail_randomly {
+            context
+                .execute_activity(FailActivity, "Fail input".to_string())
+                .await?
+        } else {
+            context.execute_activity(SumActivity, input.clone()).await?
+        };
 
         Ok(format!("Processed {}, res_2 {}", res, res_2))
     }
@@ -79,9 +90,12 @@ pub async fn run() {
     let execute_duration = start.elapsed();
 
     println!(
-        "== Workflow res: {:?} in {}ms",
+        "== Workflow res: {:?} in {}ms ==",
         res,
         execute_duration.as_millis()
+    );
+    println!(
+        r#"if it was a failure you can rerun it with POST http://localhost:8080/rerun_workflow {{ "workflow_run_id": "<the id>" }}"#
     );
 
     // tokio::time::sleep(Duration::from_secs(2)).await;
