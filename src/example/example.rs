@@ -2,12 +2,14 @@ use std::time::{Duration, Instant};
 
 use crate::core;
 use crate::server::Server;
+use rand::Rng;
 use tokio::signal;
 
 struct SumActivity;
 #[async_trait::async_trait]
 impl core::AbstractActivityHandler for SumActivity {
     async fn run(&self, input: String) -> Result<String, String> {
+        println!("[running sum activity with input {input}]");
         let number = input.parse::<i32>().map_err(|_e| "Invalid string")?;
         Ok(format!("{}", number + 1))
     }
@@ -15,7 +17,8 @@ impl core::AbstractActivityHandler for SumActivity {
 struct FailActivity;
 #[async_trait::async_trait]
 impl core::AbstractActivityHandler for FailActivity {
-    async fn run(&self, _input: String) -> Result<String, String> {
+    async fn run(&self, input: String) -> Result<String, String> {
+        println!("[running fail activity with input {input}]");
         Err("Sadge".to_string())
     }
 }
@@ -28,6 +31,7 @@ impl core::AbstractWorkflowHandler for SumAndPrintWorkflow {
         mut context: core::WorkflowContext,
         input: String,
     ) -> Result<String, String> {
+        println!("\n\n[sumandprint workflow running with {input}] ");
         let options = core::ActivityOptions {
             retry_policy: core::RetryOptions { max_attempts: 3 },
         };
@@ -36,22 +40,23 @@ impl core::AbstractWorkflowHandler for SumAndPrintWorkflow {
 
         let res = context.execute_activity(SumActivity, input.clone()).await?;
 
-        let might_fail_randomly = std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .unwrap()
-            .subsec_nanos()
-            & 1
-            == 0;
+        let might_fail_randomly = rand::rng().random_bool(0.6);
 
         let res_2 = if might_fail_randomly {
             context
                 .execute_activity(FailActivity, "Fail input".to_string())
                 .await?
         } else {
-            context.execute_activity(SumActivity, input.clone()).await?
+            context
+                .execute_activity(SumActivity, input.clone())
+                .await
+                .map_err(|e| {
+                    println!("error: {e}");
+                    e
+                })?
         };
 
-        Ok(format!("Processed {}, res_2 {}", res, res_2))
+        Ok(format!("Processed {}, res_2 {}\n\n", res, res_2))
     }
 }
 

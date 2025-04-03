@@ -40,22 +40,28 @@ async fn handle_rerun_workflow(
         .await;
 
     if let Some(last_event) = last_event {
-        let new_workflow_run_id = WorkflowRunId::new();
+        if let Some(first_event) = state
+            .db
+            .get_first_workflow_run_event(payload.workflow_run_id)
+            .await
+        {
+            let new_workflow_run_id = WorkflowRunId::new();
 
-        let event_type = last_event.event_type;
-        if event_type == WorkflowEventType::Failed {
-            state
-                .db
-                .add_workflow_event(WorkflowEvent {
-                    workflow_id: last_event.workflow_id,
-                    run_id: new_workflow_run_id,
-                    event_type: WorkflowEventType::Pending,
-                    rerun_of: Some(last_event.run_id),
-                    payload: last_event.payload,
-                    created_at: Utc::now(),
-                })
-                .await;
-            return Json(json!({ "new_workflow_id": new_workflow_run_id }));
+            let event_type = last_event.event_type;
+            if event_type == WorkflowEventType::Failed {
+                state
+                    .db
+                    .add_workflow_event(WorkflowEvent {
+                        workflow_id: last_event.workflow_id,
+                        run_id: new_workflow_run_id,
+                        event_type: WorkflowEventType::Pending,
+                        rerun_of: Some(last_event.run_id),
+                        payload: first_event.payload,
+                        created_at: Utc::now(),
+                    })
+                    .await;
+                return Json(json!({ "new_workflow_id": new_workflow_run_id }));
+            }
         }
     }
 
@@ -184,7 +190,7 @@ async fn handle_worker_event(
             workflow_run_id,
             rerun_of_workflow_run_id,
         } => {
-            println!("Completed Workflow, RunId = {}", workflow_run_id);
+            println!("Completed Workflow, RunId = {}\n", workflow_run_id);
             if error.is_empty() {
                 db.add_workflow_event(WorkflowEvent {
                     workflow_id,

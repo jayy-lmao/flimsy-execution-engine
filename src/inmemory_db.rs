@@ -193,6 +193,15 @@ impl Db {
         activity_events.last().cloned()
     }
 
+    pub async fn get_first_workflow_run_event(
+        &self,
+        workflow_run_id: WorkflowRunId,
+    ) -> Option<WorkflowEvent> {
+        let mut workflow_events = self.workflow_events.get(&workflow_run_id)?.clone();
+        workflow_events.sort_by(|b, a| a.created_at.cmp(&b.created_at));
+        workflow_events.last().cloned()
+    }
+
     pub async fn get_last_workflow_run_event(
         &self,
         workflow_run_id: WorkflowRunId,
