@@ -1,5 +1,7 @@
 ## Why
 
+inconsistent, fault-intolerant, and unresilient execution of code.
+
 This is a unreliable execution engine. Consider using in production if you want dataloss, low throughput, and poor support.
 
 ## TODO
