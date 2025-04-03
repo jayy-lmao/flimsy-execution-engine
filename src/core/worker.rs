@@ -5,7 +5,7 @@ use tokio::sync::RwLock;
 use crate::core::{
     activity::{AbstractActivityHandler, ActivityName},
     client::Client,
-    workflow_core::{AbstractWorkflowHandler, ActivityOptions, WorkflowContext, WorkflowName},
+    workflow::{AbstractWorkflowHandler, ActivityOptions, WorkflowContext, WorkflowName},
 };
 
 #[derive(Clone)]

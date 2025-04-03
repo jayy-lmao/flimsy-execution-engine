@@ -35,6 +35,12 @@ impl fmt::Display for WorkflowName {
 #[derive(Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[serde(transparent)]
 pub struct WorkflowId(Uuid);
+impl Default for WorkflowId {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl WorkflowId {
     pub fn new() -> Self {
         WorkflowId(Uuid::new_v4())
@@ -44,6 +50,12 @@ impl WorkflowId {
 #[derive(Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[serde(transparent)]
 pub struct WorkflowRunId(Uuid);
+impl Default for WorkflowRunId {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl WorkflowRunId {
     pub fn new() -> Self {
         WorkflowRunId(Uuid::new_v4())

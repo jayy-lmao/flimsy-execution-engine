@@ -3,7 +3,7 @@ use std::sync::Arc;
 use crate::core::activity::{
     Activity, ActivityEvent, ActivityEventType, ActivityId, ActivityName, ActivityRunId,
 };
-use crate::core::workflow_core::{
+use crate::core::workflow::{
     Workflow, WorkflowEvent, WorkflowEventType, WorkflowId, WorkflowName, WorkflowRunId,
 };
 use dashmap::DashMap;

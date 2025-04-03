@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::core::{
     activity::{ActivityId, ActivityName, ActivityRunId},
-    workflow_core::{WorkflowId, WorkflowName, WorkflowRunId},
+    workflow::{WorkflowId, WorkflowName, WorkflowRunId},
 };
 
 #[derive(Serialize, Deserialize)]

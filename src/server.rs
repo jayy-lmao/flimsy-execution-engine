@@ -5,7 +5,7 @@ use crate::core::worker_events::{
     PollActivityCompletion, PollActivityResponse, PollWorkflowCompletion, PollWorkflowResponse,
     ServerEvent, WorkerEvent,
 };
-use crate::core::workflow_core::{
+use crate::core::workflow::{
     Workflow, WorkflowEvent, WorkflowEventType, WorkflowId, WorkflowRunId,
 };
 use crate::inmemory_db::Db;

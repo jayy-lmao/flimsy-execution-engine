@@ -4,7 +4,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::core::workflow_core::WorkflowRunId;
+use crate::core::workflow::WorkflowRunId;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 #[serde(transparent)]
@@ -31,6 +31,12 @@ impl fmt::Display for ActivityName {
 #[derive(Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[serde(transparent)]
 pub struct ActivityId(Uuid);
+impl Default for ActivityId {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ActivityId {
     pub fn new() -> Self {
         ActivityId(Uuid::new_v4())
@@ -40,6 +46,12 @@ impl ActivityId {
 #[derive(Serialize, Deserialize, Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[serde(transparent)]
 pub struct ActivityRunId(Uuid);
+impl Default for ActivityRunId {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ActivityRunId {
     pub fn new() -> Self {
         ActivityRunId(Uuid::new_v4())

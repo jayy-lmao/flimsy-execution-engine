@@ -4,7 +4,7 @@ use crate::core::{
         PollActivityCompletion, PollActivityResponse, PollWorkflowCompletion, PollWorkflowResponse,
         ServerEvent, WorkerEvent,
     },
-    workflow_core::{WorkflowId, WorkflowName, WorkflowRunId},
+    workflow::{WorkflowId, WorkflowName, WorkflowRunId},
 };
 
 #[derive(Clone)]
